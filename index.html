@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Chatbot</title>
+    <style>
+        /* Algemene styling */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #100D28, #5D1B8C);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden; /* Voorkom scrollen buiten het scherm */
+        }
+
+        .header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+            background: transparent;
+        }
+
+        .header img {
+            height: 80px; /* Standaardgrootte van het logo */
+            animation: zoomAndMove 1.5s ease-in forwards; /* Animatie toepassen */
+        }
+
+        /* Definieer de animatie */
+        @keyframes zoomAndMove {
+            0% {
+                transform: scale(0.8) translateY(0); /* Begin kleiner en op de huidige plek */
+                opacity: 0; /* Begin met transparantie */
+            }
+            50% {
+                transform: scale(1.2) translateY(-10px); /* Zoom iets in en beweeg iets omhoog */
+                opacity: 1; /* Maak het volledig zichtbaar */
+            }
+            100% {
+                transform: scale(1) translateY(-20px); /* Eindpositie: normale grootte en iets hoger */
+            }
+        }
+
+        .chat-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+            overflow-y: auto; /* Zorg ervoor dat berichten scrollbaar zijn */
+            margin-bottom: 60px; /* Ruimte voor de invoerbalk */
+            box-sizing: border-box; /* Houd rekening met padding */
+        }
+
+        .message {
+            max-width: 80%;
+            margin-bottom: 10px;
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-size: 14px;
+            word-wrap: break-word; /* Zorg ervoor dat lange woorden worden afgebroken */
+        }
+
+        .message.novara {
+            background: #8e44ad;
+            align-self: flex-start;
+        }
+
+        .message.user {
+            background: #5a3d9a;
+            align-self: flex-end;
+        }
+
+        .input-container {
+            display: flex;
+            padding: 10px;
+            background: #6a0dad;
+            position: fixed; /* Zorg ervoor dat de invoerbalk altijd onderaan staat */
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
+            z-index: 1000; /* Zorg ervoor dat de invoerbalk altijd bovenaan staat */
+            box-sizing: border-box; /* Houd rekening met padding */
+        }
+
+        .input-container input {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            margin-right: 10px;
+            outline: none; /* Verwijder standaard outline op focus */
+        }
+
+        .input-container button {
+            padding: 15px 20px;
+            background: #ff6ec7;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .input-container button:active {
+            background: #e055b0; /* Donkerdere kleur bij klikken */
+        }
+
+        /* Media query voor telefoons */
+        @media (max-width: 768px) {
+            .header img {
+                height: 300px; /* Maak het logo nog kleiner op kleinere schermen */
+                padding-top:5px;
+            }
+
+            .chat-container {
+                padding: 5px; /* Minder padding voor meer ruimte */
+            }
+
+            .message {
+                font-size: 12px; /* Kleinere tekst voor berichten */
+                padding: 8px 10px; /* Minder padding in berichten */
+            }
+
+            .input-container input {
+                font-size: 14px; /* Iets kleinere tekst in het invoerveld */
+                padding: 12px; /* Minder padding in het invoerveld */
+            }
+
+            .input-container button {
+                font-size: 14px; /* Iets kleinere tekst op de knop */
+                padding: 12px 15px; /* Minder padding op de knop */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img src="growth_smart_cards-removebg-preview.png" alt="Logo">
+    </div>
+    <div class="chat-container" id="chat-container">
+        <!-- Messages will appear here -->
+    </div>
+    <div class="input-container">
+        <input type="text" id="user-input" placeholder="Stel een vraag">
+        <button onclick="sendMessage()">Verstuur</button>
+    </div>
+
+    <script>
+        const chatContainer = document.getElementById('chat-container');
+        const userInput = document.getElementById('user-input');
+
+        function addMessage(content, sender) {
+            const message = document.createElement('div');
+            message.classList.add('message', sender);
+            message.textContent = content;
+            chatContainer.appendChild(message);
+            chatContainer.scrollTop = chatContainer.scrollHeight; // Scroll naar de laatste boodschap
+        }
+
+        async function sendMessage() {
+            const input = userInput.value.trim();
+            if (!input) return;
+
+            // Voeg gebruikersbericht toe
+            addMessage(input, 'user');
+            userInput.value = '';
+
+            // Stuur bericht naar backend
+            try {
+                const response = await fetch('http://127.0.0.1:5000/api/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ message: input }),
+                });
+
+                const data = await response.json();
+                if (data.response) {
+                    addMessage(data.response, 'novara');
+                } else {
+                    addMessage('Er is een fout opgetreden. Probeer het opnieuw.', 'novara');
+                }
+            } catch (error) {
+                addMessage('Er is een fout opgetreden. Controleer je verbinding.', 'novara');
+            }
+        }
+    </script>
+</body>
+</html>
