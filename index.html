@@ -3,146 +3,219 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Chatbot</title>
+    <title>Novara Chatbot</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap" rel="stylesheet">
     <style>
         /* Algemene styling */
         body {
             margin: 0;
             padding: 0;
-            font-family: Arial, sans-serif;
+            font-family: 'Poppins', Arial, sans-serif;
             background: linear-gradient(135deg, #100D28, #5D1B8C);
             color: white;
             display: flex;
             flex-direction: column;
             height: 100vh;
-            overflow: hidden; /* Voorkom scrollen buiten het scherm */
+            overflow: hidden;
         }
 
         .header {
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 10px;
+            padding: 20px;
             background: transparent;
         }
 
         .header img {
-            height: 80px; /* Standaardgrootte van het logo */
-            animation: zoomAndMove 1.5s ease-in forwards; /* Animatie toepassen */
-        }
-
-        /* Definieer de animatie */
-        @keyframes zoomAndMove {
-            0% {
-                transform: scale(0.8) translateY(0); /* Begin kleiner en op de huidige plek */
-                opacity: 0; /* Begin met transparantie */
-            }
-            50% {
-                transform: scale(1.2) translateY(-10px); /* Zoom iets in en beweeg iets omhoog */
-                opacity: 1; /* Maak het volledig zichtbaar */
-            }
-            100% {
-                transform: scale(1) translateY(-20px); /* Eindpositie: normale grootte en iets hoger */
-            }
+            height: 140px; /* Maak het logo groter */
         }
 
         .chat-container {
             flex: 1;
             display: flex;
             flex-direction: column;
-            padding: 10px;
-            overflow-y: auto; /* Zorg ervoor dat berichten scrollbaar zijn */
-            margin-bottom: 60px; /* Ruimte voor de invoerbalk */
-            box-sizing: border-box; /* Houd rekening met padding */
+            padding: 20px;
+            overflow-y: auto;
+            margin-bottom: 80px; /* Ruimte voor de invoerbalk */
+            box-sizing: border-box;
         }
 
         .message {
-            max-width: 80%;
-            margin-bottom: 10px;
-            padding: 10px 15px;
-            border-radius: 10px;
-            font-size: 14px;
-            word-wrap: break-word; /* Zorg ervoor dat lange woorden worden afgebroken */
+            max-width: 260px;
+            margin-bottom: 24px;
+            padding: 18px 18px 14px 18px;
+            border-radius: 12px;
+            font-size: 16px;
+            word-wrap: break-word;
+            position: relative;
+            box-shadow: none;
+        }
+
+        .message-label {
+            display: flex;
+            align-items: center;
+            gap: 4px; /* Nauwelijks ruimte tussen Novara en logo */
+            margin-bottom: 2px;
+            margin-left: 8px;
+            font-family: 'Poppins', Arial, sans-serif;
+            font-weight: bold;
+            font-size: 15px;
+            color: #b97aff;
+            background: none;
+            box-shadow: none;
+        }
+
+        .message-label img {
+            height: 20px;
+            width: 20px;
+            object-fit: contain;
+            margin-left: 2px;
         }
 
         .message.novara {
             background: #8e44ad;
             align-self: flex-start;
+            color: white;
+            margin-left: 8px;
+        }
+
+        .message.novara-label {
+            justify-content: flex-start;
+        }
+
+        .message.novara .novara-header {
+            display: flex;
+            align-items: center;
+            position: absolute;
+            top: 10px;
+            left: 20px;
+            gap: 6px;
+        }
+
+        .message.novara .novara-header span {
+            font-size: 14px;
+            font-weight: bold;
+            font-family: 'Poppins', Arial, sans-serif;
+            color: #ff6ec7;
+        }
+
+        .message.novara .novara-header img {
+            height: 38px;
+            width: 38px;
+            object-fit: contain;
         }
 
         .message.user {
-            background: #5a3d9a;
+            background: #463e8d;
             align-self: flex-end;
+            color: white;
+            margin-right: 18px;
+        }
+
+        .message.user-label {
+            justify-content: flex-end;
+            color: #7b6fd6;
+            margin-right: 18px;
+            margin-left: 0;
+            font-size: 15px;
+        }
+
+        .message.user::before {
+            content: "Jij";
+            font-size: 14px;
+            font-weight: bold;
+            font-family: 'Poppins', Arial, sans-serif;
+            position: absolute;
+            top: -20px;
+            right: 10px;
+            color: #a29bfe;
         }
 
         .input-container {
             display: flex;
-            padding: 10px;
-            background: #6a0dad;
-            position: fixed; /* Zorg ervoor dat de invoerbalk altijd onderaan staat */
+            align-items: center;
+            padding: 0 0 0 0;
+            background: none;
+            position: fixed;
             bottom: 0;
             left: 0;
             width: 100%;
-            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
-            z-index: 1000; /* Zorg ervoor dat de invoerbalk altijd bovenaan staat */
-            box-sizing: border-box; /* Houd rekening met padding */
+            z-index: 1000;
+            box-sizing: border-box;
+            border-radius: 0;
+            height: 60px;
         }
 
         .input-container input {
             flex: 1;
-            padding: 15px;
+            padding: 0 0 0 20px;
+            height: 100%;
             border: none;
-            border-radius: 5px;
+            border-radius: 12px 0 0 12px;
             font-size: 16px;
-            margin-right: 10px;
-            outline: none; /* Verwijder standaard outline op focus */
+            outline: none;
+            background: #8541a8;
+            color: white;
+            font-family: 'Poppins', Arial, sans-serif;
+        }
+
+        .input-container input::placeholder {
+            color: #fff;
+            opacity: 0.8;
+            font-family: 'Poppins', Arial, sans-serif;
         }
 
         .input-container button {
-            padding: 15px 20px;
-            background: #ff6ec7;
+            height: 100%;
+            padding: 0 28px;
+            background: #8541a8;
             border: none;
-            border-radius: 5px;
+            border-radius: 0 12px 12px 0;
             color: white;
             font-size: 16px;
             cursor: pointer;
+            font-family: 'Poppins', Arial, sans-serif;
         }
 
         .input-container button:active {
-            background: #e055b0; /* Donkerdere kleur bij klikken */
+            background: #a259c6;
         }
 
         /* Media query voor telefoons */
         @media (max-width: 768px) {
             .header img {
-                height: 300px; /* Maak het logo nog kleiner op kleinere schermen */
-                padding-top:5px;
+                height: 200px;
             }
 
             .chat-container {
-                padding: 5px; /* Minder padding voor meer ruimte */
+                padding: 10px;
             }
 
             .message {
-                font-size: 12px; /* Kleinere tekst voor berichten */
-                padding: 8px 10px; /* Minder padding in berichten */
+                font-size: 14px;
+                padding: 10px 15px;
             }
 
             .input-container input {
-                font-size: 14px; /* Iets kleinere tekst in het invoerveld */
-                padding: 12px; /* Minder padding in het invoerveld */
+                font-size: 14px;
+                padding: 12px;
             }
 
             .input-container button {
-                font-size: 14px; /* Iets kleinere tekst op de knop */
-                padding: 12px 15px; /* Minder padding op de knop */
+                font-size: 14px;
+                padding: 12px 15px;
             }
+
+          
+            
         }
     </style>
 </head>
 <body>
     <div class="header">
-        <img src="growth_smart_cards-removebg-preview.png" alt="Logo">
+        <!-- Growth Smart Cards logo -->
+        <img class="growth-smart-cards-logo" src="growth_smart_cards-removebg-preview.png" alt="Growth Smart Cards Logo">
     </div>
     <div class="chat-container" id="chat-container">
         <!-- Messages will appear here -->
@@ -157,22 +230,53 @@
         const userInput = document.getElementById('user-input');
 
         function addMessage(content, sender) {
+            // Voeg label toe direct boven het bericht
+            if (sender === 'novara') {
+                const label = document.createElement('div');
+                label.className = 'message-label novara-label';
+                label.innerHTML = `
+                    <span>Novara</span>
+                    <img src="novara_logo_zonder_tekst-removebg-preview.png" alt="Novara logo">
+                `;
+                chatContainer.appendChild(label);
+            }
+            if (sender === 'user') {
+                const label = document.createElement('div');
+                label.className = 'message-label user-label';
+                label.textContent = 'Jij';
+                chatContainer.appendChild(label);
+            }
+
+            // Chatbalk zelf
             const message = document.createElement('div');
             message.classList.add('message', sender);
-            message.textContent = content;
+
+            if (sender === 'novara') {
+                // Typewriter effect
+                let i = 0;
+                function typeWriter() {
+                    if (i <= content.length) {
+                        message.textContent = content.slice(0, i);
+                        i++;
+                        setTimeout(typeWriter, 18); // snelheid aanpassen indien gewenst
+                    }
+                }
+                typeWriter();
+            } else {
+                message.textContent = content;
+            }
+
             chatContainer.appendChild(message);
-            chatContainer.scrollTop = chatContainer.scrollHeight; // Scroll naar de laatste boodschap
+            chatContainer.scrollTop = chatContainer.scrollHeight;
         }
 
         async function sendMessage() {
             const input = userInput.value.trim();
             if (!input) return;
 
-            // Voeg gebruikersbericht toe
             addMessage(input, 'user');
             userInput.value = '';
 
-            // Stuur bericht naar backend
             try {
                 const response = await fetch('http://127.0.0.1:5000/api/chat', {
                     method: 'POST',
@@ -192,6 +296,80 @@
                 addMessage('Er is een fout opgetreden. Controleer je verbinding.', 'novara');
             }
         }
+
+        // --- BEGIN EXTRA FUNCTIONALITEIT ---
+
+        // 1. Haal card-ID uit de URL
+        function getCardIdFromUrl() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('card');
+        }
+
+        // 2. Laad kaarten JSON (lokaal bestand, bijvoorbeeld cards.json in dezelfde map)
+        let cardsData = null;
+        async function loadCardsJson() {
+            if (cardsData) return cardsData;
+            try {
+                const res = await fetch('cards.json');
+                if (!res.ok) throw new Error('Kan kaartenbestand niet laden');
+                cardsData = await res.json();
+                return cardsData;
+            } catch (e) {
+                addMessage('Fout bij laden van kaartenbestand.', 'novara');
+                throw e;
+            }
+        }
+
+        // 3. Pas sendMessage aan om cardId en prompt te gebruiken
+        const origSendMessage = sendMessage;
+        sendMessage = async function() {
+            const input = userInput.value.trim();
+            if (!input) return;
+
+            // Haal cardId uit URL
+            const cardId = getCardIdFromUrl();
+            if (!cardId) {
+                addMessage('Geen kaart-ID gevonden in de URL.', 'novara');
+                return;
+            }
+
+            // Laad kaarten en check of cardId bestaat
+            let cards;
+            try {
+                cards = await loadCardsJson();
+            } catch {
+                return;
+            }
+            const card = cards[cardId];
+            if (!card) {
+                addMessage('Deze kaart bestaat niet.', 'novara');
+                return;
+            }
+
+            addMessage(input, 'user');
+            userInput.value = '';
+
+            try {
+                const response = await fetch('http://127.0.0.1:5000/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: input, cardId: cardId }),
+                });
+
+                const data = await response.json();
+                if (data.response) {
+                    addMessage(data.response, 'novara');
+                } else if (data.error) {
+                    addMessage(data.error, 'novara');
+                } else {
+                    addMessage('Er is een onbekende fout opgetreden.', 'novara');
+                }
+            } catch (error) {
+                addMessage('Er is een fout opgetreden. Controleer je verbinding.', 'novara');
+            }
+        };
+
+        // --- EINDE EXTRA FUNCTIONALITEIT ---
     </script>
 </body>
 </html>
