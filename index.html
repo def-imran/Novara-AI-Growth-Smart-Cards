@@ -50,16 +50,14 @@
             word-wrap: break-word;
             position: relative;
             box-shadow: none;
-        }
-
-        .message-label {
+            font-weight: medium;
+        }        .message-label {
             display: flex;
             align-items: center;
-            gap: 4px; /* Nauwelijks ruimte tussen Novara en logo */
-            margin-bottom: 2px;
+            gap: 6px; /* Iets meer ruimte tussen Novara en logo */
+            margin-bottom: 4px; /* Minder ruimte onder het label */
             margin-left: 8px;
             font-family: 'Poppins', Arial, sans-serif;
-            font-weight: bold;
             font-size: 15px;
             color: #b97aff;
             background: none;
@@ -67,10 +65,10 @@
         }
 
         .message-label img {
-            height: 20px;
-            width: 20px;
+            height: 36px;
+            width: 36px;
             object-fit: contain;
-            margin-left: 2px;
+            margin: 0 0 0 6px;
         }
 
         .message.novara {
@@ -78,6 +76,7 @@
             align-self: flex-start;
             color: white;
             margin-left: 8px;
+            font-weight: medium;
         }
 
         .message.novara-label {
@@ -134,8 +133,8 @@
 
         .input-container {
             display: flex;
-            align-items: center;
-            padding: 0 0 0 0;
+            align-items: stretch; /* Zorgt dat input en button even hoog zijn */
+            padding: 0;
             background: none;
             position: fixed;
             bottom: 0;
@@ -158,6 +157,7 @@
             background: #8541a8;
             color: white;
             font-family: 'Poppins', Arial, sans-serif;
+            box-sizing: border-box;
         }
 
         .input-container input::placeholder {
@@ -176,6 +176,8 @@
             font-size: 16px;
             cursor: pointer;
             font-family: 'Poppins', Arial, sans-serif;
+            box-sizing: border-box;
+            font-weight: bold;
         }
 
         .input-container button:active {
@@ -229,14 +231,16 @@
         const chatContainer = document.getElementById('chat-container');
         const userInput = document.getElementById('user-input');
 
+        // Voeg altijd een label toe boven het bericht
         function addMessage(content, sender) {
-            // Voeg label toe direct boven het bericht
             if (sender === 'novara') {
                 const label = document.createElement('div');
                 label.className = 'message-label novara-label';
                 label.innerHTML = `
-                    <span>Novara</span>
-                    <img src="novara_logo_zonder_tekst-removebg-preview.png" alt="Novara logo">
+                    <span style="display: flex; align-items: center; gap: 6px;">
+                        <img src="novara_logo_zonder_tekst-removebg-preview.png" alt="Novara logo" style="height: 20px; width: 20px; object-fit: contain; margin: 0;" />
+                        Novara
+                    </span>
                 `;
                 chatContainer.appendChild(label);
             }
@@ -247,7 +251,6 @@
                 chatContainer.appendChild(label);
             }
 
-            // Chatbalk zelf
             const message = document.createElement('div');
             message.classList.add('message', sender);
 
@@ -258,7 +261,7 @@
                     if (i <= content.length) {
                         message.textContent = content.slice(0, i);
                         i++;
-                        setTimeout(typeWriter, 18); // snelheid aanpassen indien gewenst
+                        setTimeout(typeWriter, 18);
                     }
                 }
                 typeWriter();
@@ -270,74 +273,37 @@
             chatContainer.scrollTop = chatContainer.scrollHeight;
         }
 
-        async function sendMessage() {
-            const input = userInput.value.trim();
-            if (!input) return;
-
-            addMessage(input, 'user');
-            userInput.value = '';
-
-            try {
-                const response = await fetch('http://127.0.0.1:5000/api/chat', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ message: input }),
-                });
-
-                const data = await response.json();
-                if (data.response) {
-                    addMessage(data.response, 'novara');
-                } else {
-                    addMessage('Er is een fout opgetreden. Probeer het opnieuw.', 'novara');
-                }
-            } catch (error) {
-                addMessage('Er is een fout opgetreden. Controleer je verbinding.', 'novara');
-            }
-        }
-
-        // --- BEGIN EXTRA FUNCTIONALITEIT ---
-
-        // 1. Haal card-ID uit de URL
+        // Haal cardId uit URL
         function getCardIdFromUrl() {
             const params = new URLSearchParams(window.location.search);
             return params.get('card');
         }
 
-        // 2. Laad kaarten JSON (lokaal bestand, bijvoorbeeld cards.json in dezelfde map)
+        // Laad kaarten JSON (lokaal bestand)
         let cardsData = null;
         async function loadCardsJson() {
             if (cardsData) return cardsData;
-            try {
-                const res = await fetch('cards.json');
-                if (!res.ok) throw new Error('Kan kaartenbestand niet laden');
-                cardsData = await res.json();
-                return cardsData;
-            } catch (e) {
-                addMessage('Fout bij laden van kaartenbestand.', 'novara');
-                throw e;
-            }
+            const res = await fetch('cards.json');
+            cardsData = await res.json();
+            return cardsData;
         }
 
-        // 3. Pas sendMessage aan om cardId en prompt te gebruiken
-        const origSendMessage = sendMessage;
-        sendMessage = async function() {
+        // Bericht versturen
+        async function sendMessage() {
             const input = userInput.value.trim();
             if (!input) return;
 
-            // Haal cardId uit URL
             const cardId = getCardIdFromUrl();
             if (!cardId) {
                 addMessage('Geen kaart-ID gevonden in de URL.', 'novara');
                 return;
             }
 
-            // Laad kaarten en check of cardId bestaat
             let cards;
             try {
                 cards = await loadCardsJson();
             } catch {
+                addMessage('Fout bij laden van kaartenbestand.', 'novara');
                 return;
             }
             const card = cards[cardId];
@@ -367,9 +333,50 @@
             } catch (error) {
                 addMessage('Er is een fout opgetreden. Controleer je verbinding.', 'novara');
             }
-        };
+        }
 
-        // --- EINDE EXTRA FUNCTIONALITEIT ---
+        // --- Welkomstbericht bij binnenkomst ---
+        window.addEventListener('DOMContentLoaded', async function() {
+            const introText = "👋 Welkom bij de Growth Smart Cards! Ik ben hier om je te helpen met inzichten die je persoonlijke en zakelijke groei stimuleren. Laat je inspireren. 🚀";
+            addMessage(introText, 'novara');
+
+            // Wacht tot het typewriter-effect klaar is + 1.5 seconde extra
+            await new Promise(resolve => setTimeout(resolve, introText.length * 18 + 1500));
+
+            // Haal kaart op uit URL en JSON
+            const cardId = getCardIdFromUrl();
+            if (!cardId) {
+                addMessage('Geen kaart-ID gevonden in de URL.', 'novara');
+                return;
+            }
+            let cards;
+            try {
+                cards = await loadCardsJson();
+            } catch {
+                addMessage('Fout bij laden van kaartenbestand.', 'novara');
+                return;
+            }
+            const card = cards[cardId];
+            if (!card) {
+                addMessage('Deze kaart bestaat niet.', 'novara');
+                return;
+            }
+
+            // Bouw kaartbericht op
+            let kaartBericht = `Je hebt deze kaart getrokken: "${card.card_text}"`;
+            if (card.group_questions && card.group_questions.length > 0) {
+                kaartBericht += "\n\nGroepsvragen:";
+                card.group_questions.forEach(q => {
+                    kaartBericht += `\n- ${q}`;
+                });
+            }
+            addMessage(kaartBericht, 'novara');
+        });
+
+        // Enter-toets support
+        userInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') sendMessage();
+        });
     </script>
 </body>
 </html>
