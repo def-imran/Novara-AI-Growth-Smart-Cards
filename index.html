@@ -282,10 +282,15 @@
         // Laad kaarten JSON (lokaal bestand)
         let cardsData = null;
         async function loadCardsJson() {
-            const res = await fetch('cards.json');
-            const cards = await res.json();
-            console.log("Loaded cards:", cards);
-            return cards;
+            try {
+                const res = await fetch('cards.json');
+                console.log("Fetch response:", res);
+                const cards = await res.json();
+                console.log("Loaded cards:", cards);
+                return cards;
+            } catch (error) {
+                console.error("Error loading cards.json:", error);
+            }
         }
 
         // Bericht versturen
