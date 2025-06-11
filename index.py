@@ -10,7 +10,6 @@ openai.api_key = "sk-proj-N4_u1PYd8Ipdwy2kb8CPjqFfNSBZHuda3-7UuSYXh_sLXQPfcMhiII
 
 # Kaarten zonder group_questions, AI bedenkt ze zelf
 cards = {
-   {
   "I-01": {
     "card_text": "Wat motiveert jou het meest om ergens hard aan te werken?",
     "theme": "motivatie"
