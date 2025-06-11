@@ -4,7 +4,7 @@ import openai
 import json
 
 app = Flask(__name__)
-CORS(app)
+CORS(app) 
 
 openai.api_key = "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"
 
