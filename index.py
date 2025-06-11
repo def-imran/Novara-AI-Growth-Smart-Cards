@@ -68,7 +68,7 @@ cards = {
   }
 }
     # Voeg meer kaarten toe indien nodig
-}
+
 
 @app.route('/api/chat', methods=['POST'])
 def chat():
