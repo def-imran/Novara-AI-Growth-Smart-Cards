@@ -282,10 +282,10 @@
         // Laad kaarten JSON (lokaal bestand)
         let cardsData = null;
         async function loadCardsJson() {
-            if (cardsData) return cardsData;
             const res = await fetch('cards.json');
-            cardsData = await res.json();
-            return cardsData;
+            const cards = await res.json();
+            console.log("Loaded cards:", cards);
+            return cards;
         }
 
         // Bericht versturen
@@ -340,10 +340,8 @@
             const introText = "👋 Welkom bij de Growth Smart Cards! Ik ben hier om je te helpen met inzichten die je persoonlijke en zakelijke groei stimuleren. Laat je inspireren. 🚀";
             addMessage(introText, 'novara');
 
-            // Wacht tot het typewriter-effect klaar is + 1.5 seconde extra
             await new Promise(resolve => setTimeout(resolve, introText.length * 18 + 1500));
 
-            // Haal kaart op uit URL en JSON
             const cardId = getCardIdFromUrl();
             if (!cardId) {
                 addMessage('Geen kaart-ID gevonden in de URL.', 'novara');
@@ -362,14 +360,8 @@
                 return;
             }
 
-            // Bouw kaartbericht op
-            let kaartBericht = `Je hebt deze kaart getrokken: "${card.card_text}"`;
-            if (card.group_questions && card.group_questions.length > 0) {
-                kaartBericht += "\n\nGroepsvragen:";
-                card.group_questions.forEach(q => {
-                    kaartBericht += `\n- ${q}`;
-                });
-            }
+            // Alleen een korte intro over de kaart
+            let kaartBericht = `Je hebt deze kaart getrokken: "${card.card_text}"\n\nNeem even de tijd om hierover na te denken.`;
             addMessage(kaartBericht, 'novara');
         });
 
