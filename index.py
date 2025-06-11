@@ -8,17 +8,67 @@ CORS(app)
 
 openai.api_key = "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"
 
-# Voorbeeld kaarten dictionary, vervang eventueel door laden uit JSON-bestand
+# Kaarten zonder group_questions, AI bedenkt ze zelf
 cards = {
-    "038": {
-        "card_text": "Waar lieg je tegen jezelf over?",
-        "theme": "zelfbedrog",
-        "group_questions": [
-            "Wat herken je bij jezelf?",
-            "Wat durf je vaak niet toe te geven?",
-            "Wat is één stap in de andere richting?"
-        ]
-    } # Voeg meer kaarten toe indien nodig
+   {
+  "I-01": {
+    "card_text": "Wat motiveert jou het meest om ergens hard aan te werken?",
+    "theme": "motivatie"
+  },
+  "I-02": {
+    "card_text":"Welke fout in je leven heeft je het meest geholpen om te groeien?",
+    "theme": "groei"
+  },
+  "I-03": {
+    "card_text": "Hoe ziet een goede balans tussen werk en privé eruit voor jou?",
+    "theme": "balans"
+  },
+  "I-04": {
+    "card_text": "Wat betekent vrijheid voor jou in je dagelijks leven?",
+    "theme": "vrijheid"
+  },
+
+  "I-05": {
+    "card_text": "Wanneer voel jij je het meest creatief?",
+    "theme": "creativiteit"
+  },
+
+  "I-06": {
+    "card_text": "Wat vind jij belangrijker: goed samenwerken of zelfstandigheid?",
+    "theme": "maatschappij"
+  },
+
+  "I-07": {
+    "card_text": "Wat zou je willen leren als je geen angst had om te falen?",
+    "theme": "angst"
+  },
+
+  "I-08": {
+    "card_text": "Wat maakt een dag voor jou echt geslaagd?",
+    "theme": "succes"
+  },
+
+  "I-09": {
+    "card_text": "Hoe ga jij om met kritiek van anderen?",
+    "theme": "kritiek"
+  },
+
+  "I-10": {
+    "card_text": "Welke droom zou je nog graag waarmaken?",
+    "theme": "doelen"
+  },
+
+  "I-11": {
+    "card_text": "Wat vind jij het leukste aan anderen helpen?",
+    "theme": "hulpvaardigheid"
+  },
+
+  "I-12": {
+    "card_text": "Wat zou je doen als geld geen rol speelde in je keuzes?",
+    "theme": "geld"
+  }
+}
+    # Voeg meer kaarten toe indien nodig
 }
 
 @app.route('/api/chat', methods=['POST'])
@@ -34,20 +84,23 @@ def chat():
     if not card:
         return jsonify({'error': f'Kaart-ID {card_id} niet gevonden'}), 404
 
-    # Stel de samengestelde prompt samen
-    kaart_prompt = f"Kaartvraag: {card['card_text']}\n"
-    if card.get('group_questions'):
-        kaart_prompt += "Groepsvragen:\n"
-        for q in card['group_questions']:
-            kaart_prompt += f"- {q}\n"
-    samengestelde_prompt = f"{kaart_prompt}\nGebruiker: {user_message}"
+    # Samengestelde prompt: AI bedenkt groepsvragen en begeleidt de sessie
+    kaart_prompt = (
+        f"Je begeleidt een groepssessie rondom persoonlijke groei. "
+        f"De kaartvraag is: '{card['card_text']}' (thema: {card['theme']}).\n"
+        "1. Herhaal de kaartvraag.\n"
+        "2. Bedenk 2 tot 3 diepgaande groepsvragen die aansluiten bij het thema en de kaartvraag.\n"
+        "3. Geef daarna een kort, inspirerend voorbeeldantwoord op de kaartvraag.\n"
+        "Wees uitnodigend en positief. Gebruik duidelijke opsommingstekens voor de groepsvragen."
+        f"\n\nGebruiker: {user_message}"
+    )
 
     try:
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
             messages=[
-                {"role": "system", "content": "Je bent een behulpzame AI-assistent."},
-                {"role": "user", "content": samengestelde_prompt}
+                {"role": "system", "content": "Je bent een warme, uitnodigende groepscoach die mensen begeleidt bij persoonlijke groei."},
+                {"role": "user", "content": kaart_prompt}
             ]
         )
         ai_message = response['choices'][0]['message']['content']
