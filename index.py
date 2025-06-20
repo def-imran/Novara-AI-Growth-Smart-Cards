@@ -1,15 +1,14 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import openai
-import json
-from dotenv import load_dotenv
 import os
+from dotenv import load_dotenv
 
 app = Flask(__name__)
 CORS(app)
 
 load_dotenv()
-openai.api_key = os.getenv("OPENAI_API_KEY")
+client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 # Kaarten zonder group_questions, AI bedenkt ze zelf
 cards = {
@@ -99,27 +98,17 @@ def chat():
     )
 
     try:
-        response = openai.ChatCompletion.create(
+        response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
                 {"role": "system", "content": "Je bent een warme, uitnodigende groepscoach die mensen begeleidt bij persoonlijke groei."},
                 {"role": "user", "content": kaart_prompt}
             ]
         )
-        ai_message = response['choices'][0]['message']['content']
+        ai_message = response.choices[0].message.content
         return jsonify({'response': ai_message})
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
     app.run(debug=True)
-
-import openai
-import os
-client = openai.OpenAI(api_key=os.environ["OPENAI_API_KEY"])
-
-response = client.chat.completions.create(
-    model="gpt-3.5-turbo",
-    messages=[{"role": "user", "content": "Hallo"}]
-)
-antwoord = response.choices[0].message.content
