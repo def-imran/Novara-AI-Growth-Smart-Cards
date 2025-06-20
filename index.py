@@ -8,58 +8,22 @@ app = Flask(__name__)
 CORS(app)
 
 load_dotenv()
-client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 # Kaarten zonder group_questions, AI bedenkt ze zelf
 cards = {
-  "I-01": {
-    "card_text": "Wat motiveert jou het meest om ergens hard aan te werken?",
-    "theme": "motivatie"
-  },
-  "I-02": {
-    "card_text": "Welke fout in je leven heeft je het meest geholpen om te groeien?",
-    "theme": "groei"
-  },
-  "I-03": {
-    "card_text": "Hoe ziet een goede balans tussen werk en privé eruit voor jou?",
-    "theme": "balans"
-  },
-  "I-04": {
-    "card_text": "Wat betekent vrijheid voor jou in je dagelijks leven?",
-    "theme": "vrijheid"
-  },
-  "I-05": {
-    "card_text": "Wanneer voel jij je het meest creatief?",
-    "theme": "creativiteit"
-  },
-  "I-06": {
-    "card_text": "Wat vind jij belangrijker: goed samenwerken of zelfstandigheid?",
-    "theme": "maatschappij"
-  },
-  "I-07": {
-    "card_text": "Wat zou je willen leren als je geen angst had om te falen?",
-    "theme": "angst"
-  },
-  "I-08": {
-    "card_text": "Wat maakt een dag voor jou echt geslaagd?",
-    "theme": "succes"
-  },
-  "I-09": {
-    "card_text": "Hoe ga jij om met kritiek van anderen?",
-    "theme": "kritiek"
-  },
-  "I-10": {
-    "card_text": "Welke droom zou je nog graag waarmaken?",
-    "theme": "doelen"
-  },
-  "I-11": {
-    "card_text": "Wat vind jij het leukste aan anderen helpen?",
-    "theme": "hulpvaardigheid"
-  },
-  "I-12": {
-    "card_text": "Wat zou je doen als geld geen rol speelde in je keuzes?",
-    "theme": "geld"
-  }
+  "I-01": {"card_text": "Wat motiveert jou het meest om ergens hard aan te werken?", "theme": "motivatie"},
+  "I-02": {"card_text": "Welke fout in je leven heeft je het meest geholpen om te groeien?", "theme": "groei"},
+  "I-03": {"card_text": "Hoe ziet een goede balans tussen werk en privé eruit voor jou?", "theme": "balans"},
+  "I-04": {"card_text": "Wat betekent vrijheid voor jou in je dagelijks leven?", "theme": "vrijheid"},
+  "I-05": {"card_text": "Wanneer voel jij je het meest creatief?", "theme": "creativiteit"},
+  "I-06": {"card_text": "Wat vind jij belangrijker: goed samenwerken of zelfstandigheid?", "theme": "maatschappij"},
+  "I-07": {"card_text": "Wat zou je willen leren als je geen angst had om te falen?", "theme": "angst"},
+  "I-08": {"card_text": "Wat maakt een dag voor jou echt geslaagd?", "theme": "succes"},
+  "I-09": {"card_text": "Hoe ga jij om met kritiek van anderen?", "theme": "kritiek"},
+  "I-10": {"card_text": "Welke droom zou je nog graag waarmaken?", "theme": "doelen"},
+  "I-11": {"card_text": "Wat vind jij het leukste aan anderen helpen?", "theme": "hulpvaardigheid"},
+  "I-12": {"card_text": "Wat zou je doen als geld geen rol speelde in je keuzes?", "theme": "geld"}
 }
 
 @app.route('/api/chat', methods=['POST'])
@@ -75,7 +39,6 @@ def chat():
     if not card:
         return jsonify({'error': f'Kaart-ID {card_id} niet gevonden'}), 404
 
-    # Dynamische prompt met kaartvraag + user input
     kaart_prompt = (
         f"Je begeleidt een groepssessie rondom persoonlijke groei. "
         f"De kaartvraag is: '{card['card_text']}' (thema: {card['theme']}).\n"
@@ -85,7 +48,7 @@ def chat():
     )
 
     try:
-        response = client.chat.completions.create(
+        response = openai.ChatCompletion.create(
             model="gpt-4",
             messages=[
                 {
@@ -107,7 +70,8 @@ def chat():
                 }
             ]
         )
-        ai_message = response.choices[0].message.content
+
+        ai_message = response.choices[0].message['content']
         return jsonify({'response': ai_message})
 
     except Exception as e:
