@@ -96,11 +96,15 @@ def chat():
 
     try:
         response = client.chat.completions.create(
-            model="gpt-4.1",
-            messages=[
-                {"role": "system", "content": "Je bent een warme, uitnodigende groepscoach die mensen begeleidt bij persoonlijke groei."},
-                {"role": "user", "content": kaart_prompt}
-            ]
+            {
+  "model": "gpt-4",
+  "messages": [
+    { "role": "system", "content": "Je bent een strategisch adviseur voor jonge ondernemers. Je antwoorden zijn helder, concreet en actiegericht." },
+    { "role": "user", "content": "Voorbeeld input: Ik krijg weinig klanten via mijn website.\nVoorbeeld output:\n1. Analyseer de bezoekersdata (bijv. Hotjar).\n2. Zorg voor 1 duidelijke call-to-action.\n3. Test 1 doelgroep met gerichte ads." },
+    { "role": "user", "content": "Ik weet niet hoe ik moet starten met verkopen zonder geld." }
+  ]
+}
+
         )
         ai_message = response.choices[0].message.content
         return jsonify({'response': ai_message})
