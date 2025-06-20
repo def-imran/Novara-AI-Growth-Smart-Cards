@@ -90,7 +90,7 @@ def chat():
     kaart_prompt = (
         f"Je begeleidt een groepssessie rondom persoonlijke groei. "
         f"De kaartvraag is: '{card['card_text']}' (thema: {card['theme']}).\n"
-        f"Geef duidelijke en diepgaande vragen over het onderwerp. Zorg ervoor dat je duidelijk bent en geef niet te lange antwoorden"
+        f"Geef duidelijke en diepgaande vragen over het onderwerp. Zorg ervoor dat je duidelijk bent en geef niet te lange antwoorden. geef geen voorbeeldantwoorden"
         f"\n\nGebruiker: {user_message}"
     )
 
