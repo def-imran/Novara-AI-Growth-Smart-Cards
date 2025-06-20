@@ -101,7 +101,10 @@ def chat():
   "messages": [
     { "role": "system", "content": "Je bent een strategisch adviseur voor jonge ondernemers. Je antwoorden zijn helder, concreet en actiegericht." },
     { "role": "user", "content": "Voorbeeld input: Ik krijg weinig klanten via mijn website.\nVoorbeeld output:\n1. Analyseer de bezoekersdata (bijv. Hotjar).\n2. Zorg voor 1 duidelijke call-to-action.\n3. Test 1 doelgroep met gerichte ads." },
-    { "role": "user", "content": "Ik weet niet hoe ik moet starten met verkopen zonder geld." }
+    { "role": "user", "content": "voorbeeld input: Ik weet niet hoe ik moet starten met verkopen zonder geld."\nVoorbeeld output:\n1. Ik begrijp dat het starten met verkopen zonder geld als een uitdaging klinkt. Hier zijn een paar vragen om je verder te helpen: }
+     { "role": "user", "content": Voorbeeld input:"Ik heb de vraag beantwoord." }\nVoorbeeld output:\n1. Oke, laten we samen deze vraag analyseren.}
+     
+     
   ]
 }
 
