@@ -96,7 +96,7 @@ def chat():
 
     try:
         response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
+            model="gpt-4.1",
             messages=[
                 {"role": "system", "content": "Je bent een warme, uitnodigende groepscoach die mensen begeleidt bij persoonlijke groei."},
                 {"role": "user", "content": kaart_prompt}
