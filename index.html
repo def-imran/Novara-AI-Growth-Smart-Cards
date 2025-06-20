@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -321,7 +321,7 @@
             userInput.value = '';
 
             try {
-                const response = await fetch('http://127.0.0.1:5000/api/chat', {
+                const response = await fetch('https://novara-ai-growth-smart-cards.onrender.com/', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ message: input, cardId: cardId }),
