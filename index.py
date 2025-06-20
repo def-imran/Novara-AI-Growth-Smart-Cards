@@ -4,12 +4,13 @@ import openai
 import json
 
 app = Flask(__name__)
-CORS(app) 
+CORS(app)
 
-openai.api_key = "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"
+openai.api_key = "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"
 
 # Kaarten zonder group_questions, AI bedenkt ze zelf
 cards = {
+   
   "I-01": {
     "card_text": "Wat motiveert jou het meest om ergens hard aan te werken?",
     "theme": "motivatie"
@@ -106,6 +107,9 @@ def chat():
         return jsonify({'response': ai_message})
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+if __name__ == '__main__':
+    app.run(debug=True)
 
 if __name__ == '__main__':
     app.run(debug=True)
