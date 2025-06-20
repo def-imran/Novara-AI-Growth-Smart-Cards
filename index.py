@@ -8,9 +8,8 @@ app = Flask(__name__)
 CORS(app)
 
 load_dotenv()
-client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
-# Kaarten zonder group_questions, AI bedenkt ze zelf
 cards = {
     "I-01": {
         "card_text": "Wat motiveert jou het meest om ergens hard aan te werken?",
@@ -60,9 +59,7 @@ cards = {
         "card_text": "Wat zou je doen als geld geen rol speelde in je keuzes?",
         "theme": "geld"
     }
-    # Voeg meer kaarten toe indien nodig
 }
-
 
 @app.route('/api/chat', methods=['POST'])
 def chat():
@@ -77,7 +74,6 @@ def chat():
     if not card:
         return jsonify({'error': f'Kaart-ID {card_id} niet gevonden'}), 404
 
-    # Samengestelde prompt
     kaart_prompt = (
         f"Je begeleidt een groepssessie rondom persoonlijke groei. "
         f"De kaartvraag is: '{card['card_text']}' (thema: {card['theme']}).\n"
@@ -86,7 +82,7 @@ def chat():
     )
 
     try:
-        response = client.chat.completions.create(
+        response = openai.ChatCompletion.create(
             model="gpt-4",
             messages=[
                 {
@@ -111,11 +107,11 @@ def chat():
                 }
             ]
         )
-        ai_message = response.choices[0].message.content
+        ai_message = response['choices'][0]['message']['content']
         return jsonify({'response': ai_message})
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-
 if __name__ == '__main__':
     app.run(debug=True)
+
