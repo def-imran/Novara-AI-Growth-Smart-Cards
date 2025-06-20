@@ -2,11 +2,14 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import openai
 import json
+from dotenv import load_dotenv
+import os
 
 app = Flask(__name__)
 CORS(app)
 
-openai.api_key = "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"
+load_dotenv()
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 # Kaarten zonder group_questions, AI bedenkt ze zelf
 cards = {
@@ -107,9 +110,6 @@ def chat():
         return jsonify({'response': ai_message})
     except Exception as e:
         return jsonify({'error': str(e)}), 500
-
-if __name__ == '__main__':
-    app.run(debug=True)
 
 if __name__ == '__main__':
     app.run(debug=True)
