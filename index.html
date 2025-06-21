@@ -355,6 +355,33 @@
             addMessage(input, 'user');
             userInput.value = '';
             showNovaraLoading();
+
+            // --- HIER: Haal het AI-antwoord op ---
+            try {
+                const response = await fetch('https://novara-ai-growth-smart-cards.onrender.com/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: input, cardId: cardId }),
+                });
+                const data = await response.json();
+
+                // Verwijder loader
+                const oldLoader = document.getElementById('novara-loader');
+                if (oldLoader) oldLoader.remove();
+
+                if (data.response) {
+                    addMessage(data.response, 'novara');
+                } else if (data.error) {
+                    addMessage(data.error, 'novara');
+                } else {
+                    addMessage('Er is een onbekende fout opgetreden.', 'novara');
+                }
+            } catch (error) {
+                // Verwijder loader bij fout
+                const oldLoader = document.getElementById('novara-loader');
+                if (oldLoader) oldLoader.remove();
+                addMessage('Er is een verbindingsfout opgetreden.', 'novara');
+            }
         }
 
         function showNovaraLoading() {
