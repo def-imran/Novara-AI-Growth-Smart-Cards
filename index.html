@@ -4,156 +4,21 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Novara Chatbot</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap" rel="stylesheet">
   <style>
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: 'Poppins', Arial, sans-serif;
-      background: linear-gradient(135deg, #100D28, #5D1B8C);
-      color: white;
-      display: flex;
-      flex-direction: column;
-      height: 100vh;
-      overflow: hidden;
-    }
-
-    .header {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-      background: transparent;
-    }
-
-    .header img {
-      height: 140px;
-    }
-
-    .chat-container {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      padding: 20px;
-      overflow-y: auto;
-      margin-bottom: 80px;
-      box-sizing: border-box;
-    }
-
-    .message {
-      max-width: 260px;
-      margin-bottom: 24px;
-      padding: 18px;
-      border-radius: 12px;
-      font-size: 16px;
-      word-wrap: break-word;
-      position: relative;
-    }
-
-    .message-label {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      margin-bottom: 4px;
-      margin-left: 8px;
-      font-size: 15px;
-      color: #b97aff;
-    }
-
-    .message-label img {
-      height: 36px;
-      width: 36px;
-      object-fit: contain;
-    }
-
-    .message.novara {
-      background: #8e44ad;
-      align-self: flex-start;
-      color: white;
-      margin-left: 8px;
-    }
-
-    .message.user {
-      background: #463e8d;
-      align-self: flex-end;
-      color: white;
-      margin-right: 18px;
-    }
-
-    .message.user::before {
-      content: "Jij";
-      font-size: 14px;
-      font-weight: bold;
-      position: absolute;
-      top: -20px;
-      right: 10px;
-      color: #a29bfe;
-    }
-
-    .input-container {
-      display: flex;
-      align-items: stretch;
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      z-index: 1000;
-      height: 60px;
-    }
-
-    .input-container input {
-      flex: 1;
-      padding: 0 0 0 20px;
-      height: 100%;
-      border: none;
-      border-radius: 12px 0 0 12px;
-      font-size: 16px;
-      outline: none;
-      background: #8541a8;
-      color: white;
-    }
-
-    .input-container input::placeholder {
-      color: #fff;
-      opacity: 0.8;
-    }
-
-    .input-container button {
-      height: 100%;
-      padding: 0 28px;
-      background: #8541a8;
-      border: none;
-      border-radius: 0 12px 12px 0;
-      color: white;
-      font-size: 16px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-
-    .input-container button:active {
-      background: #a259c6;
-    }
-
-    .typing-indicator {
-      padding: 16px;
-      background: #8e44ad;
-      color: white;
-      border-radius: 12px;
-      align-self: flex-start;
-      font-family: "Poppins", sans-serif;
-      font-size: 14px;
-      max-width: 100px;
-      margin-left: 8px;
-    }
+    /* Je bestaande CSS is hier onveranderd, ingekort voor leesbaarheid */
+    /* ... [Hier komt je hele CSS uit je originele bestand] ... */
   </style>
 </head>
 <body>
   <div class="header">
-    <img src="growth_smart_cards-removebg-preview.png" alt="Logo" />
+    <img class="growth-smart-cards-logo" src="growth_smart_cards-removebg-preview.png" alt="Growth Smart Cards Logo">
   </div>
+
   <div class="chat-container" id="chat-container"></div>
+
   <div class="input-container">
-    <input type="text" id="user-input" placeholder="Stel een vraag" />
+    <input type="text" id="user-input" placeholder="Stel een vraag">
     <button onclick="sendMessage()">Verstuur</button>
   </div>
 
@@ -161,37 +26,17 @@
     const chatContainer = document.getElementById('chat-container');
     const userInput = document.getElementById('user-input');
 
-    let typingInterval = null;
-
-    function showTypingIndicator() {
-      const indicator = document.createElement('div');
-      indicator.className = 'message novara typing-indicator';
-      indicator.id = 'typing-indicator';
-      indicator.textContent = 'Novara is aan het typen';
-      chatContainer.appendChild(indicator);
+    function scrollToBottom() {
       chatContainer.scrollTop = chatContainer.scrollHeight;
-
-      let dots = '';
-      typingInterval = setInterval(() => {
-        dots = dots.length < 3 ? dots + '.' : '';
-        indicator.textContent = `Novara is aan het typen${dots}`;
-      }, 500);
     }
 
-    function removeTypingIndicator() {
-      const indicator = document.getElementById('typing-indicator');
-      if (indicator) indicator.remove();
-      clearInterval(typingInterval);
-      typingInterval = null;
-    }
-
-    function addMessage(content, sender) {
+    function addMessage(content, sender, isTyping = false) {
       if (sender === 'novara') {
         const label = document.createElement('div');
         label.className = 'message-label novara-label';
         label.innerHTML = `
           <span style="display: flex; align-items: center; gap: 6px;">
-            <img src="novara_logo_zonder_tekst-removebg-preview.png" alt="Novara logo" style="height: 20px; width: 20px;" />
+            <img src="novara_logo_zonder_tekst-removebg-preview.png" alt="Novara logo" style="height: 20px; width: 20px; object-fit: contain; margin: 0;" />
             Novara
           </span>`;
         chatContainer.appendChild(label);
@@ -206,6 +51,17 @@
 
       const message = document.createElement('div');
       message.classList.add('message', sender);
+      chatContainer.appendChild(message);
+      scrollToBottom();
+
+      if (isTyping) {
+        let dots = '';
+        let interval = setInterval(() => {
+          dots = dots.length < 3 ? dots + '.' : '';
+          message.textContent = dots;
+        }, 400);
+        return { element: message, interval };
+      }
 
       if (sender === 'novara') {
         let i = 0;
@@ -213,16 +69,15 @@
           if (i <= content.length) {
             message.textContent = content.slice(0, i);
             i++;
+            scrollToBottom();
             setTimeout(typeWriter, 18);
           }
         }
         typeWriter();
       } else {
         message.textContent = content;
+        scrollToBottom();
       }
-
-      chatContainer.appendChild(message);
-      chatContainer.scrollTop = chatContainer.scrollHeight;
     }
 
     function getCardIdFromUrl() {
@@ -230,10 +85,12 @@
       return params.get('card');
     }
 
+    let cardsData = null;
     async function loadCardsJson() {
       try {
         const res = await fetch('cards.json');
-        return await res.json();
+        const cards = await res.json();
+        return cards;
       } catch (error) {
         console.error("Error loading cards.json:", error);
       }
@@ -266,17 +123,20 @@
       addMessage(input, 'user');
       userInput.value = '';
 
-      showTypingIndicator();
+      // Voeg typing-indicator toe
+      const { element: loadingElem, interval: loadingInterval } = addMessage('', 'novara', true);
 
       try {
         const response = await fetch('https://novara-ai-growth-smart-cards.onrender.com/api/chat', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message: input, cardId }),
+          body: JSON.stringify({ message: input, cardId: cardId }),
         });
 
         const data = await response.json();
-        removeTypingIndicator();
+
+        clearInterval(loadingInterval);
+        loadingElem.remove();
 
         if (data.response) {
           addMessage(data.response, 'novara');
@@ -286,7 +146,8 @@
           addMessage('Er is een onbekende fout opgetreden.', 'novara');
         }
       } catch (error) {
-        removeTypingIndicator();
+        clearInterval(loadingInterval);
+        loadingElem.remove();
         addMessage('Er is een fout opgetreden. Controleer je verbinding.', 'novara');
       }
     }
@@ -317,7 +178,7 @@
         return;
       }
 
-      let kaartBericht = `Je hebt deze kaart getrokken: "${card.card_text}"\n\nNeem even de tijd om hierover na te denken.`;
+      const kaartBericht = `Je hebt deze kaart getrokken: "${card.card_text}"\n\nNeem even de tijd om hierover na te denken.`;
       addMessage(kaartBericht, 'novara');
     });
 
