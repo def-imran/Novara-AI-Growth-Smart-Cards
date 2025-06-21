@@ -290,7 +290,8 @@
 
         // Voeg altijd een label toe boven het bericht
         function addMessage(content, sender) {
-            if (sender === 'novara') {
+            // Voeg geen label toe als het om de loader gaat
+            if (sender === 'novara' && content && !content.includes('Novara is aan het typen...')) {
                 const label = document.createElement('div');
                 label.className = 'message-label novara-label';
                 label.innerHTML = `
@@ -311,13 +312,13 @@
             const message = document.createElement('div');
             message.classList.add('message', sender);
 
-            if (sender === 'novara') {
+            if (sender === 'novara' && content && !content.includes('Novara is aan het typen...')) {
                 // Typewriter effect
                 let i = 0;
                 function typeWriter() {
                     if (i <= content.length) {
                         message.textContent = content.slice(0, i);
-                        chatContainer.scrollTop = chatContainer.scrollHeight; // Scroll mee tijdens typen
+                        chatContainer.scrollTop = chatContainer.scrollHeight;
                         i++;
                         setTimeout(typeWriter, 18);
                     }
@@ -325,7 +326,7 @@
                 typeWriter();
             } else {
                 message.textContent = content;
-                chatContainer.scrollTop = chatContainer.scrollHeight; // Scroll direct bij user
+                chatContainer.scrollTop = chatContainer.scrollHeight;
             }
 
             chatContainer.appendChild(message);
