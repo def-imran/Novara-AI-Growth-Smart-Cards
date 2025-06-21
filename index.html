@@ -184,6 +184,39 @@
             background: #a259c6;
         }
 
+        .dot-flashing {
+            position: relative;
+            width: 24px;
+            height: 8px;
+            display: inline-block;
+        }
+        .dot-flashing::before, .dot-flashing::after, .dot-flashing {
+            content: '';
+            display: inline-block;
+            border-radius: 50%;
+            background: #fff;
+            width: 8px;
+            height: 8px;
+            position: absolute;
+            animation: dotFlashing 1s infinite linear alternate;
+        }
+        .dot-flashing {
+            left: 0;
+            animation-delay: 0s;
+        }
+        .dot-flashing::before {
+            left: 8px;
+            animation-delay: 0.2s;
+        }
+        .dot-flashing::after {
+            left: 16px;
+            animation-delay: 0.4s;
+        }
+        @keyframes dotFlashing {
+          0% { opacity: 0.2; }
+          50%, 100% { opacity: 1; }
+        }
+
         /* Media query voor telefoons */
         @media (max-width: 768px) {
             .header img {
@@ -321,25 +354,31 @@
 
             addMessage(input, 'user');
             userInput.value = '';
+            showNovaraLoading();
+        }
 
-            try {
-                const response = await fetch('https://novara-ai-growth-smart-cards.onrender.com/api/chat', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ message: input, cardId: cardId }),
-                });
+        function showNovaraLoading() {
+            // Verwijder bestaande loader als die er is
+            const oldLoader = document.getElementById('novara-loader');
+            if (oldLoader) oldLoader.remove();
 
-                const data = await response.json();
-                if (data.response) {
-                    addMessage(data.response, 'novara');
-                } else if (data.error) {
-                    addMessage(data.error, 'novara');
-                } else {
-                    addMessage('Er is een onbekende fout opgetreden.', 'novara');
-                }
-            } catch (error) {
-                addMessage('Er is een fout opgetreden. Controleer je verbinding.', 'novara');
-            }
+            const label = document.createElement('div');
+            label.className = 'message-label novara-label';
+            label.innerHTML = `
+                <span style="display: flex; align-items: center; gap: 6px;">
+                    <img src="novara_logo_zonder_tekst-removebg-preview.png" alt="Novara logo" style="height: 20px; width: 20px; object-fit: contain; margin: 0;" />
+                    Novara
+                </span>
+            `;
+            chatContainer.appendChild(label);
+
+            const loader = document.createElement('div');
+            loader.className = 'message novara';
+            loader.id = 'novara-loader';
+            loader.innerHTML = `<span class="dot-flashing"></span>`;
+
+            chatContainer.appendChild(loader);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
         }
 
         // --- Welkomstbericht bij binnenkomst ---
