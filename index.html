@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Novara Chatbot</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap" rel="stylesheet">
     <style>
         /* Algemene styling */
         body {
@@ -51,8 +51,7 @@
             position: relative;
             box-shadow: none;
             font-weight: medium;
-        }
-        .message-label {
+        }        .message-label {
             display: flex;
             align-items: center;
             gap: 6px; /* Iets meer ruimte tussen Novara en logo */
@@ -209,19 +208,22 @@
                 font-size: 14px;
                 padding: 12px 15px;
             }
+
+          
+            
         }
     </style>
 </head>
 <body>
     <div class="header">
         <!-- Growth Smart Cards logo -->
-        <img class="growth-smart-cards-logo" src="growth_smart_cards-removebg-preview.png" alt="Growth Smart Cards Logo" />
+        <img class="growth-smart-cards-logo" src="growth_smart_cards-removebg-preview.png" alt="Growth Smart Cards Logo">
     </div>
     <div class="chat-container" id="chat-container">
         <!-- Messages will appear here -->
     </div>
     <div class="input-container">
-        <input type="text" id="user-input" placeholder="Stel een vraag" />
+        <input type="text" id="user-input" placeholder="Stel een vraag">
         <button onclick="sendMessage()">Verstuur</button>
     </div>
 
@@ -251,23 +253,26 @@
 
             const message = document.createElement('div');
             message.classList.add('message', sender);
-            chatContainer.appendChild(message);
 
             if (sender === 'novara') {
+                // Typewriter effect
                 let i = 0;
                 function typeWriter() {
                     if (i <= content.length) {
                         message.textContent = content.slice(0, i);
+                        chatContainer.scrollTop = chatContainer.scrollHeight; // Scroll mee tijdens typen
                         i++;
-                        chatContainer.scrollTop = chatContainer.scrollHeight; // automatisch scrollen tijdens typen
                         setTimeout(typeWriter, 18);
                     }
                 }
                 typeWriter();
             } else {
                 message.textContent = content;
-                chatContainer.scrollTop = chatContainer.scrollHeight; // direct scrollen bij gebruiker
+                chatContainer.scrollTop = chatContainer.scrollHeight; // Scroll direct bij user
             }
+
+            chatContainer.appendChild(message);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
         }
 
         // Haal cardId uit URL
@@ -338,16 +343,38 @@
         }
 
         // --- Welkomstbericht bij binnenkomst ---
-        window.addEventListener('DOMContentLoaded', async function () {
-            const introText = "👋 Welkom bij de Growth Smart Cards! Ik ben hier om je te helpen met inzichten die je persoonlijke en zakelijke groei stimuleren. Laat je inspireren. Stel gerust je vragen!";
+        window.addEventListener('DOMContentLoaded', async function() {
+            const introText = "👋 Welkom bij de Growth Smart Cards! Ik ben hier om je te helpen met inzichten die je persoonlijke en zakelijke groei stimuleren. Laat je inspireren. 🚀";
             addMessage(introText, 'novara');
+
+            await new Promise(resolve => setTimeout(resolve, introText.length * 18 + 1500));
+
+            const cardId = getCardIdFromUrl();
+            if (!cardId) {
+                addMessage('Geen kaart-ID gevonden in de URL.', 'novara');
+                return;
+            }
+            let cards;
+            try {
+                cards = await loadCardsJson();
+            } catch {
+                addMessage('Fout bij laden van kaartenbestand.', 'novara');
+                return;
+            }
+            const card = cards[cardId];
+            if (!card) {
+                addMessage('Deze kaart bestaat niet.', 'novara');
+                return;
+            }
+
+            // Alleen een korte intro over de kaart
+            let kaartBericht = `Je hebt deze kaart getrokken: "${card.card_text}"\n\nNeem even de tijd om hierover na te denken.`;
+            addMessage(kaartBericht, 'novara');
         });
 
-        // Verstuur bericht met Enter-toets
-        userInput.addEventListener('keydown', function (event) {
-            if (event.key === 'Enter') {
-                sendMessage();
-            }
+        // Enter-toets support
+        userInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') sendMessage();
         });
     </script>
 </body>
