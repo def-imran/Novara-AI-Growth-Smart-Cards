@@ -217,6 +217,30 @@
           50%, 100% { opacity: 1; }
         }
 
+        .bars-loader {
+          display: flex;
+          align-items: flex-end;
+          height: 18px;
+          gap: 2px;
+        }
+        .bars-loader span {
+          display: block;
+          width: 5px;
+          height: 8px;
+          background: #fff;
+          border-radius: 2px;
+          animation: barsLoaderAnim 1s infinite;
+        }
+        .bars-loader span:nth-child(1) { animation-delay: 0s; }
+        .bars-loader span:nth-child(2) { animation-delay: 0.15s; }
+        .bars-loader span:nth-child(3) { animation-delay: 0.3s; }
+        .bars-loader span:nth-child(4) { animation-delay: 0.45s; }
+
+        @keyframes barsLoaderAnim {
+          0%, 100% { height: 8px; opacity: 0.5; }
+          50% { height: 18px; opacity: 1; }
+        }
+
         /* Media query voor telefoons */
         @media (max-width: 768px) {
             .header img {
@@ -390,21 +414,17 @@
             const oldLoader = document.getElementById('novara-loader');
             if (oldLoader) oldLoader.remove();
 
-            const label = document.createElement('div');
-            label.className = 'message-label novara-label';
-            label.innerHTML = `
-                <span style="display: flex; align-items: center; gap: 6px;">
-                    <img src="novara_logo_zonder_tekst-removebg-preview.png" alt="Novara logo" style="height: 20px; width: 20px; object-fit: contain; margin: 0;" />
-                    Novara
-                </span>
-            `;
-            chatContainer.appendChild(label);
-
             const loader = document.createElement('div');
             loader.className = 'message novara';
             loader.id = 'novara-loader';
-            loader.innerHTML = `<span class="dot-flashing"></span>`;
-
+            loader.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <span class="bars-loader">
+                        <span></span><span></span><span></span><span></span>
+                    </span>
+                    <span style="font-size: 15px; color: #fff; opacity: 0.7;">Novara is aan het typen...</span>
+                </div>
+            `;
             chatContainer.appendChild(loader);
             chatContainer.scrollTop = chatContainer.scrollHeight;
         }
