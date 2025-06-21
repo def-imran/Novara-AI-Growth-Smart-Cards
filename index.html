@@ -7,54 +7,61 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap" rel="stylesheet">
   <style>
     * {
-      font-family: "Poppins", sans-serif;
       box-sizing: border-box;
     }
 
     body {
+      font-family: 'Poppins', sans-serif;
       margin: 0;
       padding: 0;
+      background-color: #f4f4f4;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
     }
 
     .header {
-      background-color: #fff;
-      padding: 10px;
+      background-color: #222;
+      color: white;
+      padding: 1rem;
       text-align: center;
     }
 
     .growth-smart-cards-logo {
-      height: 50px;
+      height: 40px;
+      vertical-align: middle;
     }
 
     .chat-container {
+      flex: 1;
+      padding: 1rem;
+      overflow-y: auto;
       display: flex;
       flex-direction: column;
-      height: 90vh;
-      overflow-y: scroll;
-      padding: 20px;
+      scroll-behavior: smooth;
     }
 
     .message-label {
-      font-size: 12px;
+      font-size: 0.8rem;
       font-weight: bold;
-      margin-top: 10px;
+      margin-top: 1rem;
     }
 
     .message-label.user-label {
       align-self: flex-end;
-      color: #aaa;
+      color: #333;
     }
 
     .message-label.novara-label {
       align-self: flex-start;
-      color: #aaa;
+      color: #0084ff;
     }
 
     .message {
-      max-width: 70%;
-      padding: 10px 15px;
-      margin: 5px 0;
-      border-radius: 20px;
+      max-width: 80%;
+      margin-top: 0.25rem;
+      padding: 0.8rem 1rem;
+      border-radius: 15px;
       line-height: 1.4;
       word-wrap: break-word;
       white-space: pre-wrap;
@@ -74,29 +81,40 @@
 
     .input-container {
       display: flex;
-      padding: 10px;
-      background-color: #f0f0f0;
+      padding: 1rem;
+      background-color: white;
+      border-top: 1px solid #ccc;
     }
 
     .input-container input {
-      flex-grow: 1;
-      padding: 10px;
-      border: none;
+      flex: 1;
+      padding: 0.8rem;
+      border: 1px solid #ccc;
       border-radius: 5px;
-      margin-right: 10px;
+      margin-right: 1rem;
     }
 
     .input-container button {
-      padding: 10px 20px;
-      border: none;
-      border-radius: 5px;
+      padding: 0.8rem 1.5rem;
       background-color: #0084ff;
       color: white;
+      border: none;
+      border-radius: 5px;
       cursor: pointer;
     }
 
     .input-container button:hover {
-      background-color: #006fe6;
+      background-color: #006fd3;
+    }
+
+    /* Scrollbar styling (optioneel) */
+    .chat-container::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .chat-container::-webkit-scrollbar-thumb {
+      background-color: rgba(0, 0, 0, 0.2);
+      border-radius: 10px;
     }
   </style>
 </head>
