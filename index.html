@@ -6,8 +6,116 @@
   <title>Novara Chatbot</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap" rel="stylesheet">
   <style>
-    /* Je bestaande CSS is hier onveranderd, ingekort voor leesbaarheid */
-    /* ... [Hier komt je hele CSS uit je originele bestand] ... */
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    .header {
+      background-color: #222;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+    }
+
+    .growth-smart-cards-logo {
+      height: 40px;
+      vertical-align: middle;
+    }
+
+    .chat-container {
+      flex: 1;
+      padding: 1rem;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      scroll-behavior: smooth;
+    }
+
+    .message-label {
+      font-size: 0.8rem;
+      font-weight: bold;
+      margin-top: 1rem;
+    }
+
+    .message-label.user-label {
+      align-self: flex-end;
+      color: #333;
+    }
+
+    .message-label.novara-label {
+      align-self: flex-start;
+      color: #0084ff;
+    }
+
+    .message {
+      max-width: 80%;
+      margin-top: 0.25rem;
+      padding: 0.8rem 1rem;
+      border-radius: 15px;
+      line-height: 1.4;
+      word-wrap: break-word;
+      white-space: pre-wrap;
+    }
+
+    .message.user {
+      align-self: flex-end;
+      background-color: #d1e7dd;
+      color: #000;
+    }
+
+    .message.novara {
+      align-self: flex-start;
+      background-color: #e7f3ff;
+      color: #000;
+    }
+
+    .input-container {
+      display: flex;
+      padding: 1rem;
+      background-color: white;
+      border-top: 1px solid #ccc;
+    }
+
+    .input-container input {
+      flex: 1;
+      padding: 0.8rem;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      margin-right: 1rem;
+    }
+
+    .input-container button {
+      padding: 0.8rem 1.5rem;
+      background-color: #0084ff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .input-container button:hover {
+      background-color: #006fd3;
+    }
+
+    /* Scrollbar styling (optioneel) */
+    .chat-container::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .chat-container::-webkit-scrollbar-thumb {
+      background-color: rgba(0, 0, 0, 0.2);
+      border-radius: 10px;
+    }
   </style>
 </head>
 <body>
@@ -85,17 +193,6 @@
       return params.get('card');
     }
 
-    let cardsData = null;
-    async function loadCardsJson() {
-      try {
-        const res = await fetch('cards.json');
-        const cards = await res.json();
-        return cards;
-      } catch (error) {
-        console.error("Error loading cards.json:", error);
-      }
-    }
-
     async function sendMessage() {
       const input = userInput.value.trim();
       if (!input) return;
@@ -106,24 +203,9 @@
         return;
       }
 
-      let cards;
-      try {
-        cards = await loadCardsJson();
-      } catch {
-        addMessage('Fout bij laden van kaartenbestand.', 'novara');
-        return;
-      }
-
-      const card = cards[cardId];
-      if (!card) {
-        addMessage('Deze kaart bestaat niet.', 'novara');
-        return;
-      }
-
       addMessage(input, 'user');
       userInput.value = '';
 
-      // Voeg typing-indicator toe
       const { element: loadingElem, interval: loadingInterval } = addMessage('', 'novara', true);
 
       try {
@@ -152,11 +234,17 @@
       }
     }
 
+    async function loadCardsJson() {
+      const res = await fetch('cards.json');
+      const cards = await res.json();
+      return cards;
+    }
+
     window.addEventListener('DOMContentLoaded', async function () {
       const introText = "👋 Welkom bij de Growth Smart Cards! Ik ben hier om je te helpen met inzichten die je persoonlijke en zakelijke groei stimuleren. Laat je inspireren. 🚀";
       addMessage(introText, 'novara');
 
-      await new Promise(resolve => setTimeout(resolve, introText.length * 18 + 1500));
+      await new Promise(resolve => setTimeout(resolve, introText.length * 18 + 1000));
 
       const cardId = getCardIdFromUrl();
       if (!cardId) {
@@ -164,15 +252,9 @@
         return;
       }
 
-      let cards;
-      try {
-        cards = await loadCardsJson();
-      } catch {
-        addMessage('Fout bij laden van kaartenbestand.', 'novara');
-        return;
-      }
-
+      const cards = await loadCardsJson();
       const card = cards[cardId];
+
       if (!card) {
         addMessage('Deze kaart bestaat niet.', 'novara');
         return;
